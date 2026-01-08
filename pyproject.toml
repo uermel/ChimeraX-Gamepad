@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+
+[project]
+name = "ChimeraX-Gamepad"
+version = "0.1.0"
+dynamic = ["classifiers", "requires-python"]
+dependencies = [
+    "ChimeraX-Core>=1.9",
+    "pysdl2>=0.9.16",
+    "pysdl2-dll>=2.28.0; sys_platform == 'win32'",
+]
+
+authors = [
+  {name = "Utz H. Ermel", email = "utz@ermel.me"},
+]
+description = "Gamepad controller support for ChimeraX."
+readme = "README.md"
+license = {text = "MIT"}
+keywords = ["gamepad", "controller", "input", "chimerax"]
+
+[project.urls]
+Repository = "https://github.com/uermel/chimerax-gamepad.git"
+Issues = "https://github.com/uermel/chimerax-gamepad/issues"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "ipython",
+    "pre-commit",
+    "ruff",
+]
+
+[chimerax]
+category = "Input Devices"
+package = "chimerax.gamepad"
+min-session-version = "1"
+max-session-version = "1"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+]
+
+[chimerax.tool."Gamepad"]
+tool_name = "Gamepad"
+category = "Input Devices"
+synopsis = "Control ChimeraX with a gamepad controller."
+
+[chimerax.command.gamepad]
+category = "Input Devices"
+synopsis = "Gamepad control commands."
+
+[chimerax.command."gamepad start"]
+category = "Input Devices"
+synopsis = "Start gamepad control."
+
+[chimerax.command."gamepad stop"]
+category = "Input Devices"
+synopsis = "Stop gamepad control."
+
+[chimerax.command."gamepad mode"]
+category = "Input Devices"
+synopsis = "Set gamepad control mode (view or model)."
+
+[chimerax.command."gamepad sensitivity"]
+category = "Input Devices"
+synopsis = "Set gamepad sensitivity."
+
+[chimerax.command."gamepad deadzone"]
+category = "Input Devices"
+synopsis = "Set gamepad dead zone."
+
+[chimerax.command."gamepad bind"]
+category = "Input Devices"
+synopsis = "Bind gamepad button to ChimeraX command."
+
+[chimerax.command."gamepad unbind"]
+category = "Input Devices"
+synopsis = "Remove gamepad button binding."
+
+[chimerax.command."gamepad settings"]
+category = "Input Devices"
+synopsis = "Open gamepad settings dialog."
+
+[tool.black]
+line-length = 120
+target_version = ['py311']
+
+[tool.ruff]
+select = [
+    "E", "W",  # pycodestyle
+    "F",  # pyflakes
+    "B",  # bugbear
+    "I",  # isort
+    "N",  # pep8-naming
+    "COM",  # commas
+    "C4",  # comprehensions
+    "SIM",  # simplify
+]
+ignore = [
+    "N802",  # Function name should be lowercase
+    "N999",  # Invalid module name
+    "E501",  # line too long
+    "C408",  # rewrite empty built-ins as literals
+]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.isort]
+known-first-party = ["chimerax.gamepad"]
+
+[tool.ruff.flake8-quotes]
+docstring-quotes = "double"
