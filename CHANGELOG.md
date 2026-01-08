@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/uermel/ChimeraX-Gamepad/compare/chimerax-gamepad-v0.2.0...chimerax-gamepad-v0.2.1) (2026-01-08)
+
+
+### 🐞 Bug Fixes
+
+* Trigger release for zenodo ([#5](https://github.com/uermel/ChimeraX-Gamepad/issues/5)) ([b82bed7](https://github.com/uermel/ChimeraX-Gamepad/commit/b82bed7b2cec919057f08ecec3edbd5aac2561ea))
+
 ## [0.2.0](https://github.com/uermel/ChimeraX-Gamepad/compare/chimerax-gamepad-v0.1.1...chimerax-gamepad-v0.2.0) (2026-01-08)
 
 
