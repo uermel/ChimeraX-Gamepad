@@ -235,10 +235,13 @@ class ModelAction:
 
         selected = []
         for m in self.session.selection.models():
-            if isinstance(m, Model) and hasattr(m, "position"):
-                # Only include top-level models (not child models)
-                if m.parent is None or m.parent is self.session.models.scene_root_model:
-                    selected.append(m)
+            # Only include top-level models with position attribute
+            if (
+                isinstance(m, Model)
+                and hasattr(m, "position")
+                and (m.parent is None or m.parent is self.session.models.scene_root_model)
+            ):
+                selected.append(m)
 
         return selected
 

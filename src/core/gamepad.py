@@ -255,7 +255,7 @@ class GamepadManager:
     def _notify_status_change(self):
         """Notify listener of controller status change."""
         if self.on_status_change is not None:
-            try:
+            import contextlib
+
+            with contextlib.suppress(Exception):
                 self.on_status_change()
-            except Exception:
-                pass  # Don't let callback errors affect gamepad operation
