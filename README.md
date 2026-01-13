@@ -78,8 +78,9 @@ This opens the Gamepad tool panel and begins listening for controller input.
 | `gamepad stop` | Stop gamepad polling |
 | `gamepad mode view` | Switch to view control mode |
 | `gamepad mode model` | Switch to model control mode |
-| `gamepad sensitivity view <value>` | Set view sensitivity (0.1-5.0) |
-| `gamepad sensitivity model <value>` | Set model sensitivity (0.1-5.0) |
+| `gamepad sensitivity translation <value>` | Set translation/pan sensitivity (0.1-5.0) |
+| `gamepad sensitivity rotation <value>` | Set rotation sensitivity (0.1-5.0) |
+| `gamepad sensitivity zoom <value>` | Set zoom/Z-translate sensitivity (0.1-5.0) |
 | `gamepad deadzone <value>` | Set dead zone (0.0-0.5) |
 | `gamepad bind <button> <command>` | Bind button to ChimeraX command |
 | `gamepad unbind <button>` | Remove button binding |
@@ -107,8 +108,9 @@ gamepad bind Y "hide surfaces"
 Settings are stored in `~/.chimerax/gamepad/config.json` and include:
 
 - **Dead zone**: Percentage of stick movement to ignore (default: 15%)
-- **View sensitivity**: Speed multiplier for view manipulation (default: 1.0)
-- **Model sensitivity**: Speed multiplier for model manipulation (default: 1.0)
+- **Translation sensitivity**: Speed multiplier for pan/translate actions (default: 1.0)
+- **Rotation sensitivity**: Speed multiplier for rotation actions (default: 1.0)
+- **Zoom sensitivity**: Speed multiplier for zoom/Z-translate actions (default: 1.0)
 - **Invert Y axis**: Flip vertical stick direction
 - **Button mappings**: Custom button-to-command mappings
 
@@ -126,8 +128,9 @@ Use `gamepad settings` to open the configuration dialog.
 
 Adjust sensitivity using:
 ```
-gamepad sensitivity view 0.5   # Slower
-gamepad sensitivity view 2.0   # Faster
+gamepad sensitivity translation 0.5   # Slower panning/translation
+gamepad sensitivity rotation 2.0      # Faster rotation
+gamepad sensitivity zoom 1.5          # Faster zoom/Z-movement
 ```
 
 ### Stick drift

@@ -48,19 +48,17 @@ class ViewAction:
         if all(abs(v) < 0.001 for v in [pan_x, pan_y, rotate_x, rotate_y, zoom]):
             return
 
-        sensitivity = self.config.view_sensitivity
-
         # Rotation (right stick)
         if abs(rotate_x) > 0.001 or abs(rotate_y) > 0.001:
-            self._apply_rotation(rotate_x, rotate_y, sensitivity)
+            self._apply_rotation(rotate_x, rotate_y, self.config.rotation_sensitivity)
 
         # Pan (left stick)
         if abs(pan_x) > 0.001 or abs(pan_y) > 0.001:
-            self._apply_pan(pan_x, pan_y, sensitivity)
+            self._apply_pan(pan_x, pan_y, self.config.translation_sensitivity)
 
         # Zoom (triggers)
         if abs(zoom) > 0.001:
-            self._apply_zoom(zoom, sensitivity)
+            self._apply_zoom(zoom, self.config.zoom_sensitivity)
 
     def _apply_rotation(self, rotate_x, rotate_y, sensitivity):
         """Apply rotation to the view.
@@ -136,22 +134,52 @@ class ViewAction:
         v = self.view
         c = v.camera
 
-        # Zoom speed (increased for better responsiveness)
-        zoom_speed = sensitivity * 15.0
-
         # Get pixel size for scaling
         psize = v.pixel_size()
         if psize is None:
             psize = 1.0
 
-        delta_z = zoom * zoom_speed * psize
-
         if c.name == "orthographic":
             # For orthographic camera, adjust field width
+            zoom_speed = sensitivity * 15.0
+            delta_z = zoom * zoom_speed * psize
             c.field_width = max(c.field_width - delta_z, psize)
             c.redraw_needed = True
+
+        elif c.name == "vr":
+            # For VR/XR cameras (including Sony Spatial Reality), use scale transformation
+            # Scale factor: >1 zooms in, <1 zooms out
+            zoom_speed = sensitivity * 0.02  # Smaller value for scale-based zoom
+            scale_factor = 1.0 + (zoom * zoom_speed)
+
+            # Clamp scale factor per frame
+            scale_factor = max(0.9, min(1.1, scale_factor))
+
+            # Get zoom center (scene center)
+            bounds = v.drawing_bounds()
+            if bounds is not None:
+                center = c.room_to_scene.inverse() * bounds.center()
+            elif hasattr(c, "room_position"):
+                center = c.room_position.origin()
+            else:
+                center = (0, 0, 0)
+
+            # Apply scale transformation
+            from chimerax.geometry import scale, translation
+
+            scale_transform = translation(center) * scale(scale_factor) * translation(-center)
+            c.move_scene(scale_transform)
+
+        elif c.name == "lookingglass":
+            # For LookingGlass displays, adjust depth_offset
+            zoom_speed = sensitivity * 15.0
+            delta_z = zoom * zoom_speed * psize
+            c.depth_offset -= delta_z
+
         else:
-            # For perspective camera, translate along camera Z axis
+            # For standard perspective cameras, translate along camera Z axis
+            zoom_speed = sensitivity * 15.0
+            delta_z = zoom * zoom_speed * psize
             shift = c.position.transform_vector((0, 0, delta_z))
             v.translate(shift)
 
@@ -208,19 +236,17 @@ class ModelAction:
         if all(abs(v) < 0.001 for v in [translate_x, translate_y, rotate_x, rotate_y, translate_z]):
             return
 
-        sensitivity = self.config.model_sensitivity
-
         # Rotation (right stick)
         if abs(rotate_x) > 0.001 or abs(rotate_y) > 0.001:
-            self._apply_rotation(models, rotate_x, rotate_y, sensitivity)
+            self._apply_rotation(models, rotate_x, rotate_y, self.config.rotation_sensitivity)
 
         # Translation XY (left stick)
         if abs(translate_x) > 0.001 or abs(translate_y) > 0.001:
-            self._apply_translation_xy(models, translate_x, translate_y, sensitivity)
+            self._apply_translation_xy(models, translate_x, translate_y, self.config.translation_sensitivity)
 
         # Translation Z (triggers)
         if abs(translate_z) > 0.001:
-            self._apply_translation_z(models, translate_z, sensitivity)
+            self._apply_translation_z(models, translate_z, self.config.zoom_sensitivity)
 
     def _get_selected_models(self):
         """Get the list of selected models that can be transformed.

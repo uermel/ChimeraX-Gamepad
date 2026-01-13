@@ -65,27 +65,38 @@ class SettingsDialog(QDialog):
         dz_layout.addWidget(self.dead_zone_label)
         sens_layout.addRow("Dead Zone:", dz_layout)
 
-        # View sensitivity
-        self.view_sens_slider = QSlider(Qt.Horizontal)
-        self.view_sens_slider.setRange(10, 500)  # 0.1-5.0
-        self.view_sens_slider.valueChanged.connect(self._on_view_sens_changed)
-        self.view_sens_label = QLabel("1.0")
-        self.view_sens_label.setMinimumWidth(40)
-        vs_layout = QHBoxLayout()
-        vs_layout.addWidget(self.view_sens_slider)
-        vs_layout.addWidget(self.view_sens_label)
-        sens_layout.addRow("View Sensitivity:", vs_layout)
+        # Translation sensitivity
+        self.trans_sens_slider = QSlider(Qt.Horizontal)
+        self.trans_sens_slider.setRange(10, 500)  # 0.1-5.0
+        self.trans_sens_slider.valueChanged.connect(self._on_trans_sens_changed)
+        self.trans_sens_label = QLabel("1.0")
+        self.trans_sens_label.setMinimumWidth(40)
+        trans_layout = QHBoxLayout()
+        trans_layout.addWidget(self.trans_sens_slider)
+        trans_layout.addWidget(self.trans_sens_label)
+        sens_layout.addRow("Translation:", trans_layout)
 
-        # Model sensitivity
-        self.model_sens_slider = QSlider(Qt.Horizontal)
-        self.model_sens_slider.setRange(10, 500)
-        self.model_sens_slider.valueChanged.connect(self._on_model_sens_changed)
-        self.model_sens_label = QLabel("1.0")
-        self.model_sens_label.setMinimumWidth(40)
-        ms_layout = QHBoxLayout()
-        ms_layout.addWidget(self.model_sens_slider)
-        ms_layout.addWidget(self.model_sens_label)
-        sens_layout.addRow("Model Sensitivity:", ms_layout)
+        # Rotation sensitivity
+        self.rot_sens_slider = QSlider(Qt.Horizontal)
+        self.rot_sens_slider.setRange(10, 500)
+        self.rot_sens_slider.valueChanged.connect(self._on_rot_sens_changed)
+        self.rot_sens_label = QLabel("1.0")
+        self.rot_sens_label.setMinimumWidth(40)
+        rot_layout = QHBoxLayout()
+        rot_layout.addWidget(self.rot_sens_slider)
+        rot_layout.addWidget(self.rot_sens_label)
+        sens_layout.addRow("Rotation:", rot_layout)
+
+        # Zoom sensitivity
+        self.zoom_sens_slider = QSlider(Qt.Horizontal)
+        self.zoom_sens_slider.setRange(10, 500)
+        self.zoom_sens_slider.valueChanged.connect(self._on_zoom_sens_changed)
+        self.zoom_sens_label = QLabel("1.0")
+        self.zoom_sens_label.setMinimumWidth(40)
+        zoom_layout = QHBoxLayout()
+        zoom_layout.addWidget(self.zoom_sens_slider)
+        zoom_layout.addWidget(self.zoom_sens_label)
+        sens_layout.addRow("Zoom:", zoom_layout)
 
         # Invert Y axis
         self.invert_y_check = QCheckBox("Invert Y Axis")
@@ -131,8 +142,9 @@ class SettingsDialog(QDialog):
     def _load_values(self):
         """Load current config values into UI."""
         self.dead_zone_slider.setValue(int(self.config.dead_zone * 100))
-        self.view_sens_slider.setValue(int(self.config.view_sensitivity * 100))
-        self.model_sens_slider.setValue(int(self.config.model_sensitivity * 100))
+        self.trans_sens_slider.setValue(int(self.config.translation_sensitivity * 100))
+        self.rot_sens_slider.setValue(int(self.config.rotation_sensitivity * 100))
+        self.zoom_sens_slider.setValue(int(self.config.zoom_sensitivity * 100))
         self.invert_y_check.setChecked(self.config.invert_y)
 
         # Load button mappings
@@ -150,13 +162,17 @@ class SettingsDialog(QDialog):
         """Handle dead zone slider change."""
         self.dead_zone_label.setText(f"{value}%")
 
-    def _on_view_sens_changed(self, value):
-        """Handle view sensitivity slider change."""
-        self.view_sens_label.setText(f"{value / 100:.1f}")
+    def _on_trans_sens_changed(self, value):
+        """Handle translation sensitivity slider change."""
+        self.trans_sens_label.setText(f"{value / 100:.1f}")
 
-    def _on_model_sens_changed(self, value):
-        """Handle model sensitivity slider change."""
-        self.model_sens_label.setText(f"{value / 100:.1f}")
+    def _on_rot_sens_changed(self, value):
+        """Handle rotation sensitivity slider change."""
+        self.rot_sens_label.setText(f"{value / 100:.1f}")
+
+    def _on_zoom_sens_changed(self, value):
+        """Handle zoom sensitivity slider change."""
+        self.zoom_sens_label.setText(f"{value / 100:.1f}")
 
     def _add_mapping(self):
         """Add a new button mapping row."""
@@ -199,8 +215,9 @@ class SettingsDialog(QDialog):
     def _apply(self):
         """Apply current settings to config."""
         self.config.dead_zone = self.dead_zone_slider.value() / 100
-        self.config.view_sensitivity = self.view_sens_slider.value() / 100
-        self.config.model_sensitivity = self.model_sens_slider.value() / 100
+        self.config.translation_sensitivity = self.trans_sens_slider.value() / 100
+        self.config.rotation_sensitivity = self.rot_sens_slider.value() / 100
+        self.config.zoom_sensitivity = self.zoom_sens_slider.value() / 100
         self.config.invert_y = self.invert_y_check.isChecked()
 
         # Update button mappings

@@ -83,7 +83,7 @@ def gamepad_sensitivity(session, target, value):
     session : chimerax.core.session.Session
         The ChimeraX session.
     target : str
-        The target to set ("view" or "model").
+        The target to set ("translation", "rotation", or "zoom").
     value : float
         The sensitivity value (0.1 to 5.0).
     """
@@ -93,12 +93,15 @@ def gamepad_sensitivity(session, target, value):
 
     config = tool.gamepad_manager.config
 
-    if target == "view":
-        config.view_sensitivity = value
-        session.logger.info(f"View sensitivity set to: {config.view_sensitivity}")
-    elif target == "model":
-        config.model_sensitivity = value
-        session.logger.info(f"Model sensitivity set to: {config.model_sensitivity}")
+    if target == "translation":
+        config.translation_sensitivity = value
+        session.logger.info(f"Translation sensitivity set to: {config.translation_sensitivity}")
+    elif target == "rotation":
+        config.rotation_sensitivity = value
+        session.logger.info(f"Rotation sensitivity set to: {config.rotation_sensitivity}")
+    elif target == "zoom":
+        config.zoom_sensitivity = value
+        session.logger.info(f"Zoom sensitivity set to: {config.zoom_sensitivity}")
     else:
         session.logger.warning(f"Unknown target: {target}")
         return
@@ -270,11 +273,11 @@ def register_gamepad_commands(logger):
         gamepad_mode,
     )
 
-    # gamepad sensitivity <view|model> <value>
+    # gamepad sensitivity <translation|rotation|zoom> <value>
     register(
         "gamepad sensitivity",
         CmdDesc(
-            required=[("target", EnumOf(["view", "model"])), ("value", FloatArg)],
+            required=[("target", EnumOf(["translation", "rotation", "zoom"])), ("value", FloatArg)],
             synopsis="Set gamepad sensitivity (0.1 to 5.0)",
         ),
         gamepad_sensitivity,

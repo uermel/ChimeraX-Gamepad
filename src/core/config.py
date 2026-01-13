@@ -17,8 +17,9 @@ class GamepadConfig:
 
     DEFAULT_CONFIG = {
         "dead_zone": 0.15,  # 15% dead zone
-        "view_sensitivity": 1.0,
-        "model_sensitivity": 1.0,
+        "translation_sensitivity": 1.0,  # For pan (view) and translate (model)
+        "rotation_sensitivity": 1.0,  # For rotate in both modes
+        "zoom_sensitivity": 1.0,  # For zoom (view) and Z-translate (model)
         "invert_y": False,
         "button_mappings": {
             # Default button mappings: button_name -> ChimeraX command
@@ -106,48 +107,70 @@ class GamepadConfig:
         self._config["dead_zone"] = max(0.0, min(0.5, value))
 
     @property
-    def view_sensitivity(self):
-        """Get the view sensitivity.
+    def translation_sensitivity(self):
+        """Get the translation sensitivity.
 
         Returns
         -------
         float
-            The view sensitivity (0.1 to 5.0).
+            The translation sensitivity (0.1 to 5.0).
         """
-        return self._config["view_sensitivity"]
+        return self._config.get("translation_sensitivity", 1.0)
 
-    @view_sensitivity.setter
-    def view_sensitivity(self, value):
-        """Set the view sensitivity.
+    @translation_sensitivity.setter
+    def translation_sensitivity(self, value):
+        """Set the translation sensitivity.
 
         Parameters
         ----------
         value : float
             The sensitivity value (clamped to 0.1-5.0).
         """
-        self._config["view_sensitivity"] = max(0.1, min(5.0, value))
+        self._config["translation_sensitivity"] = max(0.1, min(5.0, value))
 
     @property
-    def model_sensitivity(self):
-        """Get the model sensitivity.
+    def rotation_sensitivity(self):
+        """Get the rotation sensitivity.
 
         Returns
         -------
         float
-            The model sensitivity (0.1 to 5.0).
+            The rotation sensitivity (0.1 to 5.0).
         """
-        return self._config["model_sensitivity"]
+        return self._config.get("rotation_sensitivity", 1.0)
 
-    @model_sensitivity.setter
-    def model_sensitivity(self, value):
-        """Set the model sensitivity.
+    @rotation_sensitivity.setter
+    def rotation_sensitivity(self, value):
+        """Set the rotation sensitivity.
 
         Parameters
         ----------
         value : float
             The sensitivity value (clamped to 0.1-5.0).
         """
-        self._config["model_sensitivity"] = max(0.1, min(5.0, value))
+        self._config["rotation_sensitivity"] = max(0.1, min(5.0, value))
+
+    @property
+    def zoom_sensitivity(self):
+        """Get the zoom sensitivity.
+
+        Returns
+        -------
+        float
+            The zoom sensitivity (0.1 to 5.0).
+        """
+        return self._config.get("zoom_sensitivity", 1.0)
+
+    @zoom_sensitivity.setter
+    def zoom_sensitivity(self, value):
+        """Set the zoom sensitivity.
+
+        Parameters
+        ----------
+        value : float
+            The sensitivity value (clamped to 0.1-5.0).
+        """
+        self._config["zoom_sensitivity"] = max(0.1, min(5.0, value))
 
     @property
     def invert_y(self):
