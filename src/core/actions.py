@@ -48,19 +48,17 @@ class ViewAction:
         if all(abs(v) < 0.001 for v in [pan_x, pan_y, rotate_x, rotate_y, zoom]):
             return
 
-        sensitivity = self.config.view_sensitivity
-
         # Rotation (right stick)
         if abs(rotate_x) > 0.001 or abs(rotate_y) > 0.001:
-            self._apply_rotation(rotate_x, rotate_y, sensitivity)
+            self._apply_rotation(rotate_x, rotate_y, self.config.rotation_sensitivity)
 
         # Pan (left stick)
         if abs(pan_x) > 0.001 or abs(pan_y) > 0.001:
-            self._apply_pan(pan_x, pan_y, sensitivity)
+            self._apply_pan(pan_x, pan_y, self.config.translation_sensitivity)
 
         # Zoom (triggers)
         if abs(zoom) > 0.001:
-            self._apply_zoom(zoom, sensitivity)
+            self._apply_zoom(zoom, self.config.zoom_sensitivity)
 
     def _apply_rotation(self, rotate_x, rotate_y, sensitivity):
         """Apply rotation to the view.
@@ -208,19 +206,17 @@ class ModelAction:
         if all(abs(v) < 0.001 for v in [translate_x, translate_y, rotate_x, rotate_y, translate_z]):
             return
 
-        sensitivity = self.config.model_sensitivity
-
         # Rotation (right stick)
         if abs(rotate_x) > 0.001 or abs(rotate_y) > 0.001:
-            self._apply_rotation(models, rotate_x, rotate_y, sensitivity)
+            self._apply_rotation(models, rotate_x, rotate_y, self.config.rotation_sensitivity)
 
         # Translation XY (left stick)
         if abs(translate_x) > 0.001 or abs(translate_y) > 0.001:
-            self._apply_translation_xy(models, translate_x, translate_y, sensitivity)
+            self._apply_translation_xy(models, translate_x, translate_y, self.config.translation_sensitivity)
 
         # Translation Z (triggers)
         if abs(translate_z) > 0.001:
-            self._apply_translation_z(models, translate_z, sensitivity)
+            self._apply_translation_z(models, translate_z, self.config.zoom_sensitivity)
 
     def _get_selected_models(self):
         """Get the list of selected models that can be transformed.
