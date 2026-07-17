@@ -84,6 +84,72 @@ class GamepadConfig:
         except OSError:
             pass  # Silently fail if can't save
 
+    def save_to(self, path):
+        """Save configuration to an explicit file path (export).
+
+        Parameters
+        ----------
+        path : str
+            Destination file path. A leading ``~`` is expanded.
+
+        Notes
+        -----
+        Unlike :meth:`save`, errors are propagated so the caller can report them.
+        """
+        path = os.path.expanduser(path)
+        with open(path, "w") as f:
+            json.dump(self._config, f, indent=2)
+
+    def load_from(self, path):
+        """Load configuration from an explicit file path (import).
+
+        Loaded values are applied to the in-memory config only; the default
+        auto-saved config file is left untouched (session-only load). Values are
+        validated and clamped rather than trusted verbatim, so a hand-edited or
+        foreign file cannot inject invalid state.
+
+        Parameters
+        ----------
+        path : str
+            Source file path. A leading ``~`` is expanded.
+
+        Raises
+        ------
+        OSError
+            If the file cannot be read.
+        ValueError
+            If the file does not contain a JSON object or a scalar setting is not
+            a valid number.
+        json.JSONDecodeError
+            If the file is not valid JSON.
+        """
+        path = os.path.expanduser(path)
+        with open(path) as f:
+            loaded = json.load(f)
+
+        if not isinstance(loaded, dict):
+            raise ValueError("Gamepad settings file must contain a JSON object")
+
+        # Coerce scalar settings up front so a malformed field raises before
+        # anything is applied (keeps the scalar update effectively atomic).
+        casts = {
+            "dead_zone": float,
+            "translation_sensitivity": float,
+            "rotation_sensitivity": float,
+            "zoom_sensitivity": float,
+            "invert_y": bool,
+        }
+        values = {key: cast(loaded[key]) for key, cast in casts.items() if key in loaded}
+
+        # Apply through the property setters, which clamp to valid ranges.
+        for key, value in values.items():
+            setattr(self, key, value)
+
+        # Replace button mappings only if a valid mapping is provided.
+        mappings = loaded.get("button_mappings")
+        if isinstance(mappings, dict):
+            self._config["button_mappings"] = {str(k): str(v) for k, v in mappings.items() if v}
+
     @property
     def dead_zone(self):
         """Get the dead zone value.

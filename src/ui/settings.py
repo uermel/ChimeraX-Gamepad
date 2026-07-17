@@ -130,6 +130,17 @@ class SettingsDialog(QDialog):
         mapping_group.setLayout(mapping_layout)
         layout.addWidget(mapping_group)
 
+        # Save / load settings to a file
+        file_btn_layout = QHBoxLayout()
+        self.save_file_btn = QPushButton("Save to File...")
+        self.save_file_btn.clicked.connect(self._save_to_file)
+        self.load_file_btn = QPushButton("Load from File...")
+        self.load_file_btn.clicked.connect(self._load_from_file)
+        file_btn_layout.addWidget(self.save_file_btn)
+        file_btn_layout.addWidget(self.load_file_btn)
+        file_btn_layout.addStretch()
+        layout.addLayout(file_btn_layout)
+
         # Dialog buttons
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel | QDialogButtonBox.Apply)
         buttons.accepted.connect(self._save_and_close)
@@ -243,6 +254,56 @@ class SettingsDialog(QDialog):
                 self.config._config["button_mappings"][button] = command
 
         self.config.save()
+
+    def _save_to_file(self):
+        """Export current settings to a user-chosen file."""
+        from Qt.QtWidgets import QFileDialog
+
+        # Capture current dialog edits into the config before exporting.
+        self._apply()
+
+        path, _ = QFileDialog.getSaveFileName(
+            self,
+            "Save Gamepad Settings",
+            "gamepad_settings.json",
+            "JSON files (*.json)",
+        )
+        if not path:
+            return
+
+        try:
+            self.config.save_to(path)
+        except Exception as e:
+            self.session.logger.warning(f"Failed to save gamepad settings: {e}")
+            return
+        self.session.logger.info(f"Gamepad settings saved to {path}")
+
+    def _load_from_file(self):
+        """Import settings from a user-chosen file and refresh the dialog.
+
+        Loaded settings apply to the current session only; the auto-saved default
+        configuration is left unchanged.
+        """
+        from Qt.QtWidgets import QFileDialog
+
+        path, _ = QFileDialog.getOpenFileName(
+            self,
+            "Load Gamepad Settings",
+            "",
+            "JSON files (*.json)",
+        )
+        if not path:
+            return
+
+        try:
+            self.config.load_from(path)
+        except Exception as e:
+            self.session.logger.warning(f"Failed to load gamepad settings: {e}")
+            return
+
+        # Reflect the loaded values in the dialog widgets.
+        self._load_values()
+        self.session.logger.info(f"Gamepad settings loaded from {path}")
 
     def _save_and_close(self):
         """Apply settings and close dialog."""

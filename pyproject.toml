@@ -78,6 +78,14 @@ synopsis = "Bind gamepad button to ChimeraX command."
 category = "Input Devices"
 synopsis = "Remove gamepad button binding."
 
+[chimerax.command."gamepad save"]
+category = "Input Devices"
+synopsis = "Save gamepad settings to a file."
+
+[chimerax.command."gamepad load"]
+category = "Input Devices"
+synopsis = "Load gamepad settings from a file."
+
 [chimerax.command."gamepad settings"]
 category = "Input Devices"
 synopsis = "Open gamepad settings dialog."
