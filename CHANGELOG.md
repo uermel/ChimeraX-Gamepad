@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/uermel/ChimeraX-Gamepad/compare/chimerax-gamepad-v0.3.0...chimerax-gamepad-v0.4.0) (2026-07-17)
+
+
+### ✨ Features
+
+* Allow saving and loading button mappings. ([#9](https://github.com/uermel/ChimeraX-Gamepad/issues/9)) ([41e06b0](https://github.com/uermel/ChimeraX-Gamepad/commit/41e06b0bdcf2d5a3ef06f1792eedf7a2fcd19c09))
+
 ## [0.3.0](https://github.com/uermel/ChimeraX-Gamepad/compare/chimerax-gamepad-v0.2.1...chimerax-gamepad-v0.3.0) (2026-01-13)
 
 
