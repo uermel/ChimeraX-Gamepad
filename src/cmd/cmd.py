@@ -171,6 +171,55 @@ def gamepad_unbind(session, button):
     session.logger.info(f"Unbound {button.upper()}")
 
 
+def gamepad_save(session, path):
+    """Save gamepad settings to a file.
+
+    Parameters
+    ----------
+    session : chimerax.core.session.Session
+        The ChimeraX session.
+    path : str
+        Destination file path.
+    """
+    tool = _get_or_create_tool(session)
+    if not tool:
+        return
+
+    config = tool.gamepad_manager.config
+    try:
+        config.save_to(path)
+    except Exception as e:
+        session.logger.warning(f"Gamepad: Failed to save settings - {e}")
+        return
+    session.logger.info(f"Gamepad settings saved to {path}")
+
+
+def gamepad_load(session, path):
+    """Load gamepad settings from a file.
+
+    Loaded settings apply to the current session only; the auto-saved default
+    configuration is left unchanged.
+
+    Parameters
+    ----------
+    session : chimerax.core.session.Session
+        The ChimeraX session.
+    path : str
+        Source file path.
+    """
+    tool = _get_or_create_tool(session)
+    if not tool:
+        return
+
+    config = tool.gamepad_manager.config
+    try:
+        config.load_from(path)
+    except Exception as e:
+        session.logger.warning(f"Gamepad: Failed to load settings - {e}")
+        return
+    session.logger.info(f"Gamepad settings loaded from {path}")
+
+
 def gamepad_settings(session):
     """Open the gamepad settings dialog.
 
@@ -240,7 +289,15 @@ def register_gamepad_commands(logger):
     logger : chimerax.core.logger.Logger
         The ChimeraX logger.
     """
-    from chimerax.core.commands import CmdDesc, EnumOf, FloatArg, StringArg, register
+    from chimerax.core.commands import (
+        CmdDesc,
+        EnumOf,
+        FloatArg,
+        OpenFileNameArg,
+        SaveFileNameArg,
+        StringArg,
+        register,
+    )
 
     # gamepad - open the tool
     register(
@@ -311,6 +368,26 @@ def register_gamepad_commands(logger):
             synopsis="Remove gamepad button binding",
         ),
         gamepad_unbind,
+    )
+
+    # gamepad save <file>
+    register(
+        "gamepad save",
+        CmdDesc(
+            required=[("path", SaveFileNameArg)],
+            synopsis="Save gamepad settings to a file",
+        ),
+        gamepad_save,
+    )
+
+    # gamepad load <file>
+    register(
+        "gamepad load",
+        CmdDesc(
+            required=[("path", OpenFileNameArg)],
+            synopsis="Load gamepad settings from a file",
+        ),
+        gamepad_load,
     )
 
     # gamepad settings

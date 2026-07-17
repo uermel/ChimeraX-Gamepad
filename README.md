@@ -84,6 +84,8 @@ This opens the Gamepad tool panel and begins listening for controller input.
 | `gamepad deadzone <value>` | Set dead zone (0.0-0.5) |
 | `gamepad bind <button> <command>` | Bind button to ChimeraX command |
 | `gamepad unbind <button>` | Remove button binding |
+| `gamepad save <file>` | Save current settings to a file |
+| `gamepad load <file>` | Load settings from a file (this session) |
 | `gamepad settings` | Open settings dialog |
 
 ### Button Names for Binding
@@ -115,6 +117,25 @@ Settings are stored in `~/.chimerax/gamepad/config.json` and include:
 - **Button mappings**: Custom button-to-command mappings
 
 Use `gamepad settings` to open the configuration dialog.
+
+### Saving & loading settings
+
+Settings are auto-saved to the default location above. You can also export the current
+settings (sensitivities, dead zone, invert-Y, and button mappings) to a file of your choice
+and load them back later — handy for keeping per-controller or per-task setups:
+
+```
+gamepad save ~/my_gamepad.json     # export current settings
+gamepad load ~/my_gamepad.json     # import settings for this session
+gamepad save browse                # pick the destination in a file dialog
+gamepad load browse                # pick the file to load in a file dialog
+```
+
+The settings dialog also has **Save to File…** and **Load from File…** buttons.
+
+Loading is **session-only**: it applies the loaded settings immediately but does not overwrite
+the auto-saved default, so the next ChimeraX launch starts from your previous default
+(unless you change a setting afterward, which re-saves the default).
 
 ## Troubleshooting
 
